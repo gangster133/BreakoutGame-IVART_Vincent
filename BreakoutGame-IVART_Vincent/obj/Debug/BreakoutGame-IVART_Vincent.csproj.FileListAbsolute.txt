@@ -1,0 +1,11 @@
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\bin\Debug\BreakoutGame-IVART_Vincent.exe.config
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\bin\Debug\BreakoutGame-IVART_Vincent.exe
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\bin\Debug\BreakoutGame-IVART_Vincent.pdb
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\bin\Debug\OpenTK.dll
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\bin\Debug\OpenTK.pdb
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\bin\Debug\OpenTK.xml
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\obj\Debug\BreakoutGame-IVART_Vincent.csproj.AssemblyReference.cache
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\obj\Debug\BreakoutGame-IVART_Vincent.csproj.CoreCompileInputs.cache
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\obj\Debug\Breakout.DCA829C6.Up2Date
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\obj\Debug\BreakoutGame-IVART_Vincent.exe
+C:\Users\thewo\source\repos\En cours\BreakoutGame-IVART_Vincent\BreakoutGame-IVART_Vincent\obj\Debug\BreakoutGame-IVART_Vincent.pdb
