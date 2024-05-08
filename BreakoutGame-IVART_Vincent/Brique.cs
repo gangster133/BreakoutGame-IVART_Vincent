@@ -29,7 +29,6 @@ namespace BreakoutGame_IVART_Vincent {
 
         #region MethodesCLasseParent
         public override void update() { }
-
         public void dessiner() {
             GL.PushMatrix();
             base.dessiner(PrimitiveType.Quads);
@@ -40,11 +39,9 @@ namespace BreakoutGame_IVART_Vincent {
         #region GestionCollisions
         public RectangleCollision getRectangleCollision(CoteObjets coteBalle, float padding) {
             CoteObjets coteCaisse = getCoteInverse(coteBalle);
-
             Vector2 pointInferieurGauche;
             float largeur;
             float hauteur;
-
             switch (coteCaisse) {
                 case CoteObjets.NORD:
                     hauteur = padding;
@@ -72,12 +69,10 @@ namespace BreakoutGame_IVART_Vincent {
                     hauteur = 0.0f;
                     break;
             }
-
             return new RectangleCollision(pointInferieurGauche, largeur, hauteur);
         }
         private CoteObjets getCoteInverse(CoteObjets coteBallse) {
             CoteObjets coteBrique;
-
             switch (coteBallse) {
                 case CoteObjets.NORD:
                     coteBrique = CoteObjets.SUD;
@@ -104,18 +99,14 @@ namespace BreakoutGame_IVART_Vincent {
             } else {
                 nomTexture = "../../images/Brique" + pointsDeVie + ".bmp";
             }
-
             chargerTexture();
         }
-
         public int getPV() {
             return pointsDeVie;
         }
-
         public bool estIndestructible() {
             return indestructible;
         }
-
         public void reducPV() { pointsDeVie--; }
     }
 }

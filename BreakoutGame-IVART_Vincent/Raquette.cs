@@ -31,8 +31,6 @@ namespace BreakoutGame_IVART_Vincent {
         }
         public void dessiner() {
             GL.PushMatrix();
-            //GL.Translate(deplacementHorizontal, 0, 0.0f);
-
             base.dessiner(PrimitiveType.Quads);
             GL.PopMatrix();
         }
@@ -52,11 +50,9 @@ namespace BreakoutGame_IVART_Vincent {
         #region GestionCollisions
         public RectangleCollision getRectangleCollision(CoteObjets coteBalle, float padding) {
             CoteObjets coteRaquette = getCoteInverse(coteBalle);
-
             Vector2 pointInferieurGauche;
             float largeur;
             float hauteur;
-
             switch (coteRaquette) {
                 case CoteObjets.NORD:
                     hauteur = padding;
@@ -82,9 +78,8 @@ namespace BreakoutGame_IVART_Vincent {
                     pointInferieurGauche = new Vector2();
                     largeur = 0.0f;
                     hauteur = 0.0f;
-                    break;
+                break;
             }
-
             return new RectangleCollision(pointInferieurGauche, largeur, hauteur);
         }
         private CoteObjets getCoteInverse(CoteObjets coteBalle) {

@@ -42,7 +42,6 @@ namespace BreakoutGame_IVART_Vincent {
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, largeur, hauteur, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
-
         }
         #endregion
 
@@ -68,18 +67,14 @@ namespace BreakoutGame_IVART_Vincent {
         }
         private void chargerTexte() {
             Bitmap bmpTxt = new Bitmap(largeurZoneTexte, hauteurZoneTexte, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
             Graphics graphique = Graphics.FromImage(bmpTxt);
             graphique.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             graphique.Clear(couleurDeFond);
             graphique.DrawString(texte, policeAffichage, pinceau, position);
-
             Rectangle zoneTexte = new Rectangle(0, 0, largeurZoneTexte, hauteurZoneTexte);
             System.Drawing.Imaging.BitmapData dataTxt = bmpTxt.LockBits(zoneTexte, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
             GL.BindTexture(TextureTarget.Texture2D, textureID);
             GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, largeurZoneTexte, hauteurZoneTexte, PixelFormat.Bgra, PixelType.UnsignedByte, dataTxt.Scan0);
-
             bmpTxt.UnlockBits(dataTxt);
         }
         public void setCouleurFond(Color couleur) {
@@ -94,7 +89,6 @@ namespace BreakoutGame_IVART_Vincent {
             policeAffichage = policeSansSerif;
             chargerTexte();
         }
-
         public void setPoliceGras() {
             policeAffichage = policeSansSerifGras;
             chargerTexte();

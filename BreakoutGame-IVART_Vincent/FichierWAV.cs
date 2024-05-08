@@ -21,12 +21,9 @@ namespace BreakoutGame_IVART_Vincent {
             if (stream == null) {
                 throw new ArgumentNullException("stream");
             }
-
             int nbrOctets;
             string donneesFichier;
-
             BinaryReader reader = new BinaryReader(stream);
-
             nbrOctets = 4;
             donneesFichier = new string(reader.ReadChars(nbrOctets));
             if (donneesFichier != "RIFF") {

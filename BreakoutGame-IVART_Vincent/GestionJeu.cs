@@ -10,7 +10,6 @@ namespace BreakoutGame_IVART_Vincent {
     enum CoteObjets { NULL, NORD, SUD, EST, OUEST }
     enum TableauBrique { Full, CouronneInverse, PyramideInverse, PyramideNegative }
     class GestionJeu {
-
         #region Attributs
         GameWindow window;
         Balle balle;
@@ -38,7 +37,6 @@ namespace BreakoutGame_IVART_Vincent {
             jeuPause = false;
             start();
         }
-
         private void start() {
             double nbrImagesParSeconde = 60.0f;
             double dureeAffichageChaqueImage = 1.0f / nbrImagesParSeconde;
@@ -48,29 +46,22 @@ namespace BreakoutGame_IVART_Vincent {
             stringNbrPoints = "Points : ";
             nbrTableau = 0;
             stringNbrTableaux = "Tableaux :";
-
             window.Load += chargement;
             window.Resize += redimensionner;
-            //window.KeyPress += actionKeyPress;
             window.KeyDown += actionKeyDown;
             window.KeyUp += actionKeyUp;
             window.UpdateFrame += update;
             window.RenderFrame += rendu;
             window.Run(dureeAffichageChaqueImage);
         }
-
         private void chargement(object sender, EventArgs arg) {
             GL.ClearColor(0.196f, 0.196f, 0.196f, 1.0f);
             GL.Enable(EnableCap.Texture2D);
 
             audio = new GestionAudio();
-
             nouvelleBalle();
-
             nouvelleRaquette();
-
             nbrTableau++;
-
             brique = UsineDeBrique.getListeBrique(TableauBrique.PyramideInverse);
 
             int hauteurZoneTexte = 15;
@@ -97,7 +88,6 @@ namespace BreakoutGame_IVART_Vincent {
             texteNbrBalles.setCouleurTexte(Color.Orange);
             texteNbrBalles.setCouleurFond(Color.BlueViolet);
             texteNbrBalles.setPoliceNormal();
-
         }
         #endregion
 
@@ -122,7 +112,6 @@ namespace BreakoutGame_IVART_Vincent {
                 texteNbrTableaux.setTexte(getTxtCompletNbrTableaux());
             }
         }
-
         private void rendu(object sender, FrameEventArgs arg) {
             GL.Clear(ClearBufferMask.ColorBufferBit);
             texteNbrBalles.dessiner();
@@ -157,7 +146,6 @@ namespace BreakoutGame_IVART_Vincent {
                 window.Exit();
             }
         }
-
         private void actionKeyUp(object sender, KeyboardKeyEventArgs arg) {
             if (arg.Key == Key.A || arg.Key == Key.Left) {
                 raquette.deplacer(arg.Key, false);
@@ -179,7 +167,7 @@ namespace BreakoutGame_IVART_Vincent {
                         copieBrique.getTextureBrique();
                         audio.jouerSonBounce();
                     } else {
-                        if(!copieBrique.estIndestructible()) {
+                        if (!copieBrique.estIndestructible()) {
                             brique.Remove(copieBrique);
                             audio.jouerSonBrick();
                         } else { audio.jouerSonBounce(); }
@@ -192,7 +180,12 @@ namespace BreakoutGame_IVART_Vincent {
                     tableauVide = false;
                 }
             }
-            balle.siCollision(raquette);
+            if (balle.siCollision(raquette)) {
+                audio.jouerSonRaquette();
+            }
+            if (balle.aCollisionneBordure()) {
+                audio.jouerSonBounce();
+            }
             if (tableauVide) {
                 changerTableau();
             }
@@ -225,11 +218,9 @@ namespace BreakoutGame_IVART_Vincent {
             Random random = new Random();
             TableauBrique tableau = (TableauBrique)random.Next(4);
             brique = UsineDeBrique.getListeBrique(tableau);
-
             nouvelleBalle();
             nouvelleRaquette();
         }
-
         public void nouvelleBalle() {
             Vector2 pointA = new Vector2(-5.0f, -5.0f);
             Vector2 pointB = new Vector2(5.0f, -5.0f);
@@ -237,7 +228,6 @@ namespace BreakoutGame_IVART_Vincent {
             Vector2 pointD = new Vector2(-5.0f, 5.0f);
             balle = new Balle(pointA, pointB, pointC, pointD);
         }
-
         public void nouvelleRaquette() {
             Vector2 pointA = new Vector2(-30.0f, -135.0f);
             Vector2 pointB = new Vector2(30.0f, -135.0f);
@@ -248,6 +238,7 @@ namespace BreakoutGame_IVART_Vincent {
         public void balleSortie() {
             jeuActif = false;
             nbrBalle--;
+            audio.jouerSonFail();
             if (nbrBalle > 0) {
                 nouvelleBalle();
                 nouvelleRaquette();

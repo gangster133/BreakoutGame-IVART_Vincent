@@ -27,7 +27,6 @@ namespace BreakoutGame_IVART_Vincent {
         #region GestionCollisions
         private bool siCollisionPotentielle_AxeY(Vector2[] segmentBalle, CoteObjets coteVerificationBalle) {
             bool estCollisionPotentielle = false;
-
             switch (coteVerificationBalle) {
                 case CoteObjets.NORD:
                 case CoteObjets.SUD:
@@ -54,7 +53,6 @@ namespace BreakoutGame_IVART_Vincent {
         }
         private bool siCollisionPotentielle_AxeX(Vector2[] segmentBalle, CoteObjets coteVerificationBalle) {
             bool estCollisionPotentielle = false;
-
             switch (coteVerificationBalle) {
                 case CoteObjets.NORD:
                 case CoteObjets.SUD:
@@ -76,7 +74,6 @@ namespace BreakoutGame_IVART_Vincent {
         }
         public bool verifCollision(Vector2[] segmentBalle, CoteObjets coteVerificationBalle) {
             bool estCollision = false;
-
             if (siCollisionPotentielle_AxeY(segmentBalle, coteVerificationBalle)
                 && siCollisionPotentielle_AxeX(segmentBalle, coteVerificationBalle)) {
                 estCollision = true;
