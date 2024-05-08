@@ -9,8 +9,8 @@ namespace BreakoutGame_IVART_Vincent {
         float incrementVertical;
         float deplacementHorizontal;
         float incrementHorizontal;
-        const float maxIncrementVertical = 3.0f;
-        const float maxIncrementHorizontal = 2.0f;
+        const float maxIncrementVertical = 2.0f;
+        const float maxIncrementHorizontal = 1.75f;
         bool estSotie = false;
         bool collisionMur;
         CoteObjets coteCollision;

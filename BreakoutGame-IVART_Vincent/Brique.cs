@@ -3,6 +3,7 @@ using System;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing.Imaging;
 using System.Drawing;
+using System.Runtime.Remoting.Messaging;
 
 namespace BreakoutGame_IVART_Vincent {
     class Brique : BasePourObjets {
@@ -10,7 +11,12 @@ namespace BreakoutGame_IVART_Vincent {
         int positionLigne;
         int positionColonne;
         int pointsDeVie;
-        bool indestructible = false;
+        bool estIndestructible = false;
+        int nbrFrame = 0;
+        bool enDestruction = false;
+        bool aDetruire = false;
+        bool estDynamique = false;
+        const int maxPV = 15;
         #endregion
 
         #region ConstructeursInitialisation
@@ -19,16 +25,33 @@ namespace BreakoutGame_IVART_Vincent {
             positionLigne = posLigne;
             positionColonne = posColonne;
             Random random = new Random();
-            pointsDeVie = random.Next(1, 4);
-            if (random.Next(10) == 3) {
-                indestructible = true;
+            int valueBrique = random.Next(1, 6);
+            switch (valueBrique) {
+                case 1:
+                case 2:
+                case 3:
+                    pointsDeVie = valueBrique;
+                    break;
+                case 4:
+                    estDynamique = true;
+                    pointsDeVie = 1;
+                    break;
+                case 5:
+                    estIndestructible = true;
+                    break;
+                default:
+                    break;
             }
             getTextureBrique();
         }
         #endregion
 
         #region MethodesCLasseParent
-        public override void update() { }
+        public override void update() {
+            if (enDestruction) {
+                animationDestruction();
+            }
+        }
         public void dessiner() {
             GL.PushMatrix();
             base.dessiner(PrimitiveType.Quads);
@@ -94,8 +117,10 @@ namespace BreakoutGame_IVART_Vincent {
         }
         #endregion
         public void getTextureBrique() {
-            if (indestructible) {
+            if (estIndestructible) {
                 nomTexture = "../../images/BriqueIndestructible.bmp";
+            } else if (estDynamique) {
+                nomTexture = "../../images/BriqueDynamique" + pointsDeVie + ".bmp";
             } else {
                 nomTexture = "../../images/Brique" + pointsDeVie + ".bmp";
             }
@@ -104,9 +129,40 @@ namespace BreakoutGame_IVART_Vincent {
         public int getPV() {
             return pointsDeVie;
         }
-        public bool estIndestructible() {
-            return indestructible;
+        public bool getEstIndestructible() {
+            return estIndestructible;
         }
-        public void reducPV() { pointsDeVie--; }
+        public bool estEnDestruction() {
+            return enDestruction;
+        }
+        public void reducPV() {
+            pointsDeVie--;
+        }
+        public void ajoutPV(int ajout) {
+            pointsDeVie += ajout;
+            if (pointsDeVie > maxPV) { pointsDeVie = maxPV; }
+        }
+        public bool estADetruire() {
+            return aDetruire;
+        }
+
+        public bool getEstDynamique() {
+            return estDynamique;
+        }
+        public void activeEnDestruction() { enDestruction = true; }
+
+        public void animationDestruction() {
+            nbrFrame++;
+            if (nbrFrame <= 20) {
+                nomTexture = estDynamique ? "../../images/BriqueDynamiqueDestruction1.bmp" : "../../images/BriqueDestruction1.bmp";
+            } else if (nbrFrame <= 40) {
+                nomTexture = estDynamique ? "../../images/BriqueDynamiqueDestruction2.bmp" : "../../images/BriqueDestruction2.bmp";
+            } else if (nbrFrame <= 60) {
+                nomTexture = estDynamique ? "../../images/BriqueDynamiqueDestruction3.bmp" : "../../images/BriqueDestruction3.bmp";
+            } else {
+                aDetruire = true;
+            }
+            chargerTexture();
+        }
     }
 }

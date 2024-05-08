@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Drawing;
 using OpenTK;
@@ -27,12 +26,13 @@ namespace BreakoutGame_IVART_Vincent {
         int nbrTableau;
         string stringNbrTableaux;
         Texte texteNbrTableaux;
+        int nbrRebondRaquette;
+        bool strategie2Activee;
         #endregion
 
         #region ConstructeurInitialisation
         public GestionJeu(GameWindow window) {
             this.window = window;
-            //isGameOver = false;
             jeuActif = false;
             jeuPause = false;
             start();
@@ -40,6 +40,7 @@ namespace BreakoutGame_IVART_Vincent {
         private void start() {
             double nbrImagesParSeconde = 60.0f;
             double dureeAffichageChaqueImage = 1.0f / nbrImagesParSeconde;
+            strategie2Activee = false;
             nbrBalle = 3;
             stringNbrBalles = "Balles : ";
             nbrPoints = 0;
@@ -61,8 +62,7 @@ namespace BreakoutGame_IVART_Vincent {
             audio = new GestionAudio();
             nouvelleBalle();
             nouvelleRaquette();
-            nbrTableau++;
-            brique = UsineDeBrique.getListeBrique(TableauBrique.PyramideInverse);
+            nouveauTableau();
 
             int hauteurZoneTexte = 15;
             int largeurZoneTexte = 200;
@@ -106,6 +106,13 @@ namespace BreakoutGame_IVART_Vincent {
                 detectionCollision();
                 if (balle.estSortie()) {
                     balleSortie();
+                }
+                List<Brique> copieCaisse = new List<Brique>(brique);
+                foreach (Brique copieBrique in copieCaisse) {
+                    copieBrique.update();
+                    if (copieBrique.estADetruire()) {
+                        brique.Remove(copieBrique);
+                    }
                 }
                 texteNbrBalles.setTexte(getTxtCompletNbrBalle());
                 texteNbrPoints.setTexte(getTxtCompletNbrPoints());
@@ -159,6 +166,7 @@ namespace BreakoutGame_IVART_Vincent {
         private void detectionCollision() {
             List<Brique> copieCaisse = new List<Brique>(brique);
             bool tableauVide = true;
+            bool tableauDynamiqueEtIndestructible = true;
 
             foreach (Brique copieBrique in copieCaisse) {
                 if (balle.siCollision(copieBrique)) {
@@ -167,27 +175,38 @@ namespace BreakoutGame_IVART_Vincent {
                         copieBrique.getTextureBrique();
                         audio.jouerSonBounce();
                     } else {
-                        if (!copieBrique.estIndestructible()) {
-                            brique.Remove(copieBrique);
+                        if (!copieBrique.getEstIndestructible()) {
+                            copieBrique.activeEnDestruction();
                             audio.jouerSonBrick();
                         } else { audio.jouerSonBounce(); }
                     }
                     balle.inverserDirectionSelonCollision();
-                    nbrPoints += 5;
+                    nbrPoints += copieBrique.getEstIndestructible() ? 0 : 5;
                     Console.WriteLine("Nombre de points: " + nbrPoints);
                 }
-                if (!copieBrique.estIndestructible()) {
-                    tableauVide = false;
+                if (!copieBrique.getEstDynamique()) {
+                    tableauDynamiqueEtIndestructible = false;
+                    if (!copieBrique.getEstIndestructible()) {
+                        tableauVide = false;
+                    }
                 }
+
             }
             if (balle.siCollision(raquette)) {
                 audio.jouerSonRaquette();
+                nbrRebondRaquette++;
+                if (nbrRebondRaquette % 10 == 0) {
+                    strategie1BriqueDynamique();
+                }
             }
             if (balle.aCollisionneBordure()) {
                 audio.jouerSonBounce();
             }
-            if (tableauVide) {
-                changerTableau();
+            if (tableauDynamiqueEtIndestructible) {
+                strategie2BriqueDynamique();
+                if (tableauVide) {
+                    changerTableau();
+                }
             }
         }
         #endregion // GestionCollisions
@@ -215,11 +234,9 @@ namespace BreakoutGame_IVART_Vincent {
             foreach (Brique copieBrique in copieCaisse) {
                 brique.Remove(copieBrique);
             }
-            Random random = new Random();
-            TableauBrique tableau = (TableauBrique)random.Next(4);
-            brique = UsineDeBrique.getListeBrique(tableau);
             nouvelleBalle();
             nouvelleRaquette();
+            nouveauTableau();
         }
         public void nouvelleBalle() {
             Vector2 pointA = new Vector2(-5.0f, -5.0f);
@@ -235,6 +252,14 @@ namespace BreakoutGame_IVART_Vincent {
             Vector2 pointD = new Vector2(-30.0f, -120.0f);
             raquette = new Raquette(pointA, pointB, pointC, pointD);
         }
+        public void nouveauTableau() {
+            nbrTableau++;
+            nbrRebondRaquette = 0;
+            strategie2Activee = false;
+            Random random = new Random();
+            TableauBrique tableau = (TableauBrique)random.Next(4);
+            brique = UsineDeBrique.getListeBrique(tableau);
+        }
         public void balleSortie() {
             jeuActif = false;
             nbrBalle--;
@@ -243,6 +268,31 @@ namespace BreakoutGame_IVART_Vincent {
                 nouvelleBalle();
                 nouvelleRaquette();
             }
+        }
+        public void strategie1BriqueDynamique() {
+            List<Brique> copieCaisse = new List<Brique>(brique);
+            foreach (Brique copieBrique in copieCaisse) {
+                if (copieBrique.getEstDynamique() && !copieBrique.estEnDestruction()) {
+                    copieBrique.ajoutPV(1);
+                    copieBrique.getTextureBrique();
+                }
+            }
+        }
+        public void strategie2BriqueDynamique() {
+            Console.WriteLine("Entrée dans strategie 2");
+            if (!strategie2Activee) {
+                strategie2Activee=true;
+                List<Brique> copieCaisse = new List<Brique>(brique);
+                foreach (Brique copieBrique in copieCaisse) {
+                    if (copieBrique.getEstDynamique() && !copieBrique.estEnDestruction()) {
+                        copieBrique.ajoutPV(5);
+                        copieBrique.getTextureBrique();
+                    }
+                }
+            }
+        }
+
+        public void strategie3BriqueDynamique() {
         }
     }
 }

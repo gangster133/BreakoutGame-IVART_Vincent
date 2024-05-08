@@ -14,7 +14,7 @@ namespace BreakoutGame_IVART_Vincent {
             float espacement = 5.0f;
             float Original_X = -300.0f;
             int qtyRows = 4;
-            int qtyColumn = 11;
+            int qtyColumn = 9;
             float largeurCotes = (600.0f - (qtyColumn - 1) * espacement) / qtyColumn;
             float hauteurCotes = 20.0f;
             List<Brique> listeCaisses = new List<Brique>();
