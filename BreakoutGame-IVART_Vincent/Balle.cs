@@ -5,11 +5,12 @@ using OpenTK.Graphics.OpenGL;
 namespace BreakoutGame_IVART_Vincent {
     class Balle : BasePourObjets {
         #region Attributs
+        GestionAudio audio = new GestionAudio();
         float deplacementVertical;
         float incrementVertical;
         float deplacementHorizontal;
         float incrementHorizontal;
-        const float maxIncrementVertical = 2.0f;
+        const float maxIncrementVertical = 3.0f;
         const float maxIncrementHorizontal = 2.0f;
         bool estSotie = false;
 
@@ -30,9 +31,11 @@ namespace BreakoutGame_IVART_Vincent {
         public override void update() {
             if (deplacementVertical + incrementVertical >= 150.0f - listePoints[3].Y) {
                 incrementVertical *= -1.0f;
+                audio.jouerSonBounce();
             }
             if (deplacementHorizontal + incrementHorizontal >= 300.0f - listePoints[2].X || deplacementHorizontal + incrementHorizontal <= -300.0f - listePoints[0].X) {
                 incrementHorizontal *= -1.0f;
+                audio.jouerSonBounce();
             }
             if (deplacementVertical + incrementVertical <= -150.0f - listePoints[0].Y) {
                 estSotie = true;
@@ -137,7 +140,8 @@ namespace BreakoutGame_IVART_Vincent {
                         incrementHorizontal += signeDelta * minDelta;
 
                         inverserDirectionVerticale();
-
+                        incrementVertical = incrementVertical < maxIncrementVertical ? incrementVertical + 0.2f : maxIncrementVertical;
+                        audio.jouerSonRaquette();
                         Console.WriteLine("Raquette Collisioné");
                         break;
                     }
@@ -153,11 +157,11 @@ namespace BreakoutGame_IVART_Vincent {
             switch (coteVerificationBalle) {
                 case CoteObjets.NORD:
                 case CoteObjets.SUD:
-                    padding = maxIncrementVertical;
+                    padding = maxIncrementVertical*2;
                     break;
                 case CoteObjets.EST:
                 case CoteObjets.OUEST:
-                    padding = maxIncrementHorizontal;
+                    padding = maxIncrementHorizontal*2;
                     break;
                 default:
                     padding = 0.0f;

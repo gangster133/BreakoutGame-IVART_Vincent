@@ -50,11 +50,14 @@
     <Compile Include="Balle.cs" />
     <Compile Include="BasePourObjet.cs" />
     <Compile Include="Brique.cs" />
+    <Compile Include="FichierWAV.cs" />
+    <Compile Include="GestionAudio.cs" />
     <Compile Include="GestionJeu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Raquette.cs" />
     <Compile Include="RectangleCollision.cs" />
+    <Compile Include="Texte.cs" />
     <Compile Include="UsineDeBrique.cs" />
   </ItemGroup>
   <ItemGroup>
