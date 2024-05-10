@@ -1,5 +1,6 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
+using System;
 
 namespace BreakoutGame_IVART_Vincent {
     internal class Program {

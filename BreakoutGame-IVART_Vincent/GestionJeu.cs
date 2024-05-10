@@ -28,6 +28,7 @@ namespace BreakoutGame_IVART_Vincent {
         Texte texteNbrTableaux;
         int nbrRebondRaquette;
         bool strategie2Activee;
+        Random random = new Random((int)DateTime.Now.Ticks);
         #endregion
 
         #region ConstructeurInitialisation
@@ -58,6 +59,8 @@ namespace BreakoutGame_IVART_Vincent {
         private void chargement(object sender, EventArgs arg) {
             GL.ClearColor(0.196f, 0.196f, 0.196f, 1.0f);
             GL.Enable(EnableCap.Texture2D);
+
+            affichageConsole();
 
             audio = new GestionAudio();
             nouvelleBalle();
@@ -135,6 +138,19 @@ namespace BreakoutGame_IVART_Vincent {
             }
             window.SwapBuffers();
         }
+
+        public void affichageConsole() {
+            Console.SetWindowSize(60, 13);
+            Console.WriteLine(" espace\t: lance la partie/active la balle");
+            Console.WriteLine(" A ou <-: Décale la raquette a gauche");
+            Console.WriteLine(" D ou ->: Décale la raquette a droite");
+            Console.WriteLine(" P\t: Met en pause le jeu");
+            Console.WriteLine("");
+            Console.WriteLine(" Stratégie 1 : Les briques dynamique gagnent 1 PV\n a chaque fois que la balle touche 10 fois la raquette\n");
+            Console.WriteLine(" Stratégie 2 : Les briques dynamique gagnent 5 PV\n si il ne reste qu'elles et les briques indestructible\n");
+            Console.WriteLine(" Stratégie 3 : Les briques dynamique gagnent\n 2 PV lorsque la balle sort");
+            Console.SetCursorPosition(0, 0);
+        }
         #endregion
 
         #region GestionEntrees
@@ -166,7 +182,7 @@ namespace BreakoutGame_IVART_Vincent {
         private void detectionCollision() {
             List<Brique> copieCaisse = new List<Brique>(brique);
             bool tableauVide = true;
-            bool tableauDynamiqueEtIndestructible = true;
+            bool tableauQueDynamique = true;
 
             foreach (Brique copieBrique in copieCaisse) {
                 if (balle.siCollision(copieBrique)) {
@@ -182,12 +198,11 @@ namespace BreakoutGame_IVART_Vincent {
                     }
                     balle.inverserDirectionSelonCollision();
                     nbrPoints += copieBrique.getEstIndestructible() ? 0 : 5;
-                    Console.WriteLine("Nombre de points: " + nbrPoints);
                 }
-                if (!copieBrique.getEstDynamique()) {
-                    tableauDynamiqueEtIndestructible = false;
-                    if (!copieBrique.getEstIndestructible()) {
-                        tableauVide = false;
+                if (!copieBrique.getEstIndestructible()) {
+                    tableauVide = false;
+                    if (!copieBrique.getEstDynamique()) {
+                        tableauQueDynamique = false;
                     }
                 }
 
@@ -195,14 +210,12 @@ namespace BreakoutGame_IVART_Vincent {
             if (balle.siCollision(raquette)) {
                 audio.jouerSonRaquette();
                 nbrRebondRaquette++;
-                if (nbrRebondRaquette % 10 == 0) {
-                    strategie1BriqueDynamique();
-                }
+                strategie1BriqueDynamique();
             }
             if (balle.aCollisionneBordure()) {
                 audio.jouerSonBounce();
             }
-            if (tableauDynamiqueEtIndestructible) {
+            if (tableauQueDynamique) {
                 strategie2BriqueDynamique();
                 if (tableauVide) {
                     changerTableau();
@@ -228,8 +241,6 @@ namespace BreakoutGame_IVART_Vincent {
             nbrBalle += 2;
             nbrPoints += 50;
             nbrTableau++;
-            Console.WriteLine("Nombre de balles: " + nbrBalle);
-            Console.WriteLine("Nombre de points: " + nbrPoints);
             List<Brique> copieCaisse = new List<Brique>(brique);
             foreach (Brique copieBrique in copieCaisse) {
                 brique.Remove(copieBrique);
@@ -256,7 +267,6 @@ namespace BreakoutGame_IVART_Vincent {
             nbrTableau++;
             nbrRebondRaquette = 0;
             strategie2Activee = false;
-            Random random = new Random();
             TableauBrique tableau = (TableauBrique)random.Next(4);
             brique = UsineDeBrique.getListeBrique(tableau);
         }
@@ -268,20 +278,26 @@ namespace BreakoutGame_IVART_Vincent {
                 nouvelleBalle();
                 nouvelleRaquette();
             }
+            strategie3BriqueDynamique();
         }
+
+        //Stratégie 1 -> Toutes les briques dynamique gagnent 1 PV a chaque fois que la balle touche 10 fois la raquette
         public void strategie1BriqueDynamique() {
-            List<Brique> copieCaisse = new List<Brique>(brique);
-            foreach (Brique copieBrique in copieCaisse) {
-                if (copieBrique.getEstDynamique() && !copieBrique.estEnDestruction()) {
-                    copieBrique.ajoutPV(1);
-                    copieBrique.getTextureBrique();
+            if (nbrRebondRaquette % 10 == 0) {
+                List<Brique> copieCaisse = new List<Brique>(brique);
+                foreach (Brique copieBrique in copieCaisse) {
+                    if (copieBrique.getEstDynamique() && !copieBrique.estEnDestruction()) {
+                        copieBrique.ajoutPV(1);
+                        copieBrique.getTextureBrique();
+                    }
                 }
             }
         }
+
+        //Stratégie 2 -> Si il ne reste que des briques indestructible et dynamique, toutes les briques dynamique gagnent 5 PV
         public void strategie2BriqueDynamique() {
-            Console.WriteLine("Entrée dans strategie 2");
             if (!strategie2Activee) {
-                strategie2Activee=true;
+                strategie2Activee = true;
                 List<Brique> copieCaisse = new List<Brique>(brique);
                 foreach (Brique copieBrique in copieCaisse) {
                     if (copieBrique.getEstDynamique() && !copieBrique.estEnDestruction()) {
@@ -292,7 +308,15 @@ namespace BreakoutGame_IVART_Vincent {
             }
         }
 
+        //Stratégie 3 -> Toutes les briques dynamique gagnent 2 PV si la balle sort
         public void strategie3BriqueDynamique() {
+            List<Brique> copieCaisse = new List<Brique>(brique);
+            foreach (Brique copieBrique in copieCaisse) {
+                if (copieBrique.getEstDynamique() && !copieBrique.estEnDestruction()) {
+                    copieBrique.ajoutPV(2);
+                    copieBrique.getTextureBrique();
+                }
+            }
         }
     }
 }

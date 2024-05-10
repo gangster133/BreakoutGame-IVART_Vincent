@@ -102,7 +102,6 @@ namespace BreakoutGame_IVART_Vincent {
                     if (siCollision) {
                         siCollision = true;
                         this.coteCollision = coteVerificationBalle;
-                        Console.WriteLine("Brique collisioné");
                         break;
                     }
                 }
@@ -130,7 +129,6 @@ namespace BreakoutGame_IVART_Vincent {
                         incrementHorizontal += signeDelta * minDelta;
                         inverserDirectionVerticale();
                         incrementVertical = incrementVertical < maxIncrementVertical ? incrementVertical + 0.2f : maxIncrementVertical;
-                        Console.WriteLine("Raquette Collisioné");
                         break;
                     }
                 }

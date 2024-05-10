@@ -24,19 +24,15 @@ namespace BreakoutGame_IVART_Vincent {
             base("../../images/Brique1.bmp", pointA, pointB, pointC, pointD) {
             positionLigne = posLigne;
             positionColonne = posColonne;
-            Random random = new Random();
-            int valueBrique = random.Next(1, 6);
-            switch (valueBrique) {
+            Random random = new Random((int)DateTime.Now.Ticks); ;
+            pointsDeVie = random.Next(1, 4);
+            int typeBrique = random.Next(10);
+            switch (typeBrique) {
                 case 1:
-                case 2:
-                case 3:
-                    pointsDeVie = valueBrique;
-                    break;
-                case 4:
-                    estDynamique = true;
+                    estDynamique=true;
                     pointsDeVie = 1;
                     break;
-                case 5:
+                case 2:
                     estIndestructible = true;
                     break;
                 default:
